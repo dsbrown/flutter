@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import 'src/autofill.dart' 
+import 'src/autofill.dart';
 import 'src/form_widgets.dart';
 import 'src/http/mock_client.dart';
 import 'src/sign_in_http.dart';
