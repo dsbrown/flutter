@@ -1,119 +1,73 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+//import 'package:intl/intl.dart' as intl;
 
-part 'sign_in_http.g.dart';
-
-@JsonSerializable()
-class FormData {
-  String email;
-  String password;
-
-  FormData({
-    this.email,
-    this.password,
-  });
-
-  factory FormData.fromJson(Map<String, dynamic> json) =>
-      _$FormDataFromJson(json);
-
-  Map<String, dynamic> toJson() => _$FormDataToJson(this);
-}
-
-class SignInHttpDemo extends StatefulWidget {
-  final http.Client httpClient;
-
-  SignInHttpDemo({
-    this.httpClient,
-  });
-
+class FormWidgetsDemo extends StatefulWidget {
   @override
-  _SignInHttpDemoState createState() => _SignInHttpDemoState();
+  _FormWidgetsDemoState createState() => _FormWidgetsDemoState();
 }
 
-class _SignInHttpDemoState extends State<SignInHttpDemo> {
-  FormData formData = FormData();
+class _FormWidgetsDemoState extends State<FormWidgetsDemo> {
+  final _formKey = GlobalKey<FormState>();
+  String title = '';
+  String description = '';
+  DateTime date = DateTime.now();
+  double maxValue = 0;
+  bool brushedTeeth = false;
+  bool enableFeature = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign in Form'),
+        title: Text('Form widgets'),
       ),
       body: Form(
+        key: _formKey,
         child: Scrollbar(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                ...[
-                  TextFormField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      hintText: 'Your email address',
-                      labelText: 'Email',
-                    ),
-                    onChanged: (value) {
-                      formData.email = value;
-                    },
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Card(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 400),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ...[
+                        TextFormField(
+                          decoration: InputDecoration(
+                            filled: true,
+                            hintText: 'Enter a title...',
+                            labelText: 'Title',
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              title = value;
+                            });
+                          },
+                        ),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
+                            filled: true,
+                            hintText: 'Enter a description...',
+                            labelText: 'Description',
+                          ),
+                          onChanged: (value) {
+                            description = value;
+                          },
+                          maxLines: 5,
+                        ),
+                      ],
+                    ],
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      filled: true,
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    onChanged: (value) {
-                      formData.password = value;
-                    },
-                  ),
-                  FlatButton(
-                    child: Text('Sign in'),
-                    onPressed: () async {
-                      // Use a JSON encoded string to send
-                      var result = await widget.httpClient.post(
-                          'https://example.com/signin',
-                          body: json.encode(formData.toJson()),
-                          headers: {'content-type': 'application/json'});
-
-                      if (result.statusCode == 200) {
-                        _showDialog('Succesfully signed in.');
-                      } else if (result.statusCode == 401) {
-                        _showDialog('Unable to sign in.');
-                      } else {
-                        _showDialog('Something went wrong. Please try again.');
-                      }
-                    },
-                  ),
-                ].expand(
-                  (widget) => [
-                    widget,
-                    SizedBox(
-                      height: 24,
-                    )
-                  ],
-                )
-              ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  void _showDialog(String message) {
-    showDialog(
-      context: context,
-      child: AlertDialog(
-        title: Text(message),
-        actions: [
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
       ),
     );
   }
